@@ -6,18 +6,27 @@ set -e
 echo "OPENFIDO_INPUT = $OPENFIDO_INPUT"
 echo "OPENFIDO_OUTPUT = $OPENFIDO_OUTPUT"
 
-docker run --rm --name gridlabd_1_1_anticipation \
--v $OPENFIDO_INPUT:/model \
--v $OPENFIDO_INPUT/tmp:/tmp \
--v /var/run/docker.sock:/var/run/docker.sock \
--w /model slacgrip/master:200527 \
-python3 -u run_gridlabd_main.py \
--W /model \
--i $OPENFIDO_OUTPUT/anticipation_ieee123_pole_vulnerability.glm \
--o $OPENFIDO_OUTPUT/anticipation_ieee123_pole_vulnerability_post_run.json
+if ls -1 *.glm | grep -q .glm; then # TODO: redirect input of ls elsewhere
+  input_glm=`ls -1 *.glm | head -n 1 | cut -f 1 -d '.'`
+  echo "Input GLM: $input_glm"
 
-echo "Output files expected:
-ieee123_model_1.csv
-ieee123_model_2.csv
-ieee123_model_3.csv
-anticipation_ieee123_pole_vulnerability_post_run.json"
+  if ls $OPENFIDO_INPUT/*.tmy3 | grep -q .tmy3; then
+    echo "Running GridLabD"
+
+    # Run GridLabD command
+    python3 -u run_gridlabd_main.py \
+    -i $input_glm \
+    -o "${input_glm%.*}_post_run.json"
+  else
+    echo "Input .tmy3 file not found"
+    exit 1
+  fi
+else
+  echo "Input .glm file not found"
+  exit 1
+fi
+
+mv *.csv $OPENFIDO_OUTPUT                             # will error out with exit code 1
+mv "${input_glm%.*}_post_run.json" $OPENFIDO_OUTPUT
+mv gridlabd.* $OPENFIDO_OUTPUT
+mv *.txt $OPENFIDO_OUTPUT
