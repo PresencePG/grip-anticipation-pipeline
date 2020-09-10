@@ -11,6 +11,6 @@ Modify the starttime and stoptime in the `.glm` file to change the simulation du
 ```
 clock {
    	starttime "2003-02-01T00:00:00Z";
-   	stoptime '2003-02-02T00:00:00Z';
+   	stoptime "2003-02-02T00:00:00Z";
 }
 ```
