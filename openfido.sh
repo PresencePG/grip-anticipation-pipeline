@@ -7,7 +7,7 @@ echo "OPENFIDO_INPUT = $OPENFIDO_INPUT"
 echo "OPENFIDO_OUTPUT = $OPENFIDO_OUTPUT"
 
 if ls -1 *.glm | grep -q .glm; then # TODO: redirect input of ls elsewhere
-  input_glm=`ls -1 *.glm | head -n 1 | cut -f 1 -d '.'`
+  input_glm=`ls -1 *.glm | head -n 1`
   echo "Input GLM: $input_glm"
 
   if ls $OPENFIDO_INPUT/*.tmy3 | grep -q .tmy3; then
