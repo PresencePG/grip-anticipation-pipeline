@@ -32,5 +32,8 @@ python3 -u run_gridlabd_main.py \
 
 mv *.json $OPENFIDO_OUTPUT
 mv *.csv $OPENFIDO_OUTPUT
+for csv in *.csv; do
+  cat $csv | awk '/^# / { lastpound=$0; gsub(/^# /,"",lastpound) } !/^# / { if(lastpound) print lastpound ; print; lastpound="" }' | sed 's/^property.. //' > $OPENFIDO_OUTPUT/$csv
+done
 mv gridlabd.* $OPENFIDO_OUTPUT
 mv *.txt $OPENFIDO_OUTPUT
