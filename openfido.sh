@@ -1,7 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
+# nounset: undefined variable outputs error message, and forces an exit
+set -u
 # errexit: abort script at first error
 set -e
+# print command to stdout before executing it:
+set -x
 
 echo "OPENFIDO_INPUT = $OPENFIDO_INPUT"
 echo "OPENFIDO_OUTPUT = $OPENFIDO_OUTPUT"
@@ -31,9 +35,8 @@ python3 -u run_gridlabd_main.py \
 -o ${input_glm%.*}_post_run.json
 
 mv *.json $OPENFIDO_OUTPUT
-mv *.csv $OPENFIDO_OUTPUT
-for csv in *.csv; do
-  cat $csv | awk '/^# / { lastpound=$0; gsub(/^# /,"",lastpound) } !/^# / { if(lastpound) print lastpound ; print; lastpound="" }' | sed 's/^property.. //' > $OPENFIDO_OUTPUT/$csv
+for i in *.csv; do
+  cat $i | awk '/^# / { lastpound=$0; gsub(/^# /,"",lastpound) } !/^# / { if(lastpound) print lastpound ; print; lastpound="" }' | sed 's/^property.. //' > $OPENFIDO_OUTPUT/$i
 done
 mv gridlabd.* $OPENFIDO_OUTPUT
 mv *.txt $OPENFIDO_OUTPUT
